@@ -1,3 +1,10 @@
+/* ---------------------------------------------------------
+   Liste doublement chainée avec un itérateur.
+   Implémentation des méthodes de classes.
+   ---------------------------------------------------------
+   09/03/22	BOubacar SOW	création
+   ---------------------------------------------------------
+*/
 #include <iostream>
 #include <cstdlib>
 #include "../include/DLinkedlist.h"
@@ -10,7 +17,6 @@ DLinkedlist::DLinkedlist()
 
 void DLinkedlist::add_node(int value)
 {
-
     s_node *new_node = new s_node;
     new_node->value = value;
     new_node->marked = false;
@@ -19,7 +25,6 @@ void DLinkedlist::add_node(int value)
         new_node->next = nullptr;
         new_node->previous = nullptr;
         head = queue = new_node;
-        std::cout << "tete: " << head->value << std::endl;
     }
     else
     {
@@ -125,6 +130,8 @@ void DLinkedlist::visit_list()
     std::cout << "]";
 }
 
+Iterator::Iterator() : elm(nullptr) { ; }
+
 Iterator DLinkedlist::begin()
 {
     cur.elm = head;
@@ -139,6 +146,10 @@ Iterator DLinkedlist::begin()
         }
     }*/
     return cur;
+}
+
+int& Iterator::operator*(){
+    return cur.elm->value;
 }
 
 Iterator DLinkedlist::end()
@@ -192,45 +203,23 @@ Iterator Iterator::operator++()
 
 Iterator Iterator::operator++(int)
 {
-    if (!elm)
-        return *this;
-    elm = elm->next;
-    /*À décommenter si on ne veut pas du tout afficher les éléments marqués. On sautera alors les éléments marqués.
-      Ceci a été commenté pour pouvoir prendre en charge l'affichage des éléments marqués avec une tête de mort.
-    if (elm)
-    {
-        if (elm->marked == true)
-        {
-            if (elm->next)
-            {
-                while (elm->marked == true and elm)
-                {
-                    elm = elm->next;
-                }
-            }
-            else
-            {
-                elm = elm->next;
-            }
-        }
-    }
-    */
-    cur.elm = elm;
-    return cur;
+    auto tmp = *this;
+    operator++();
+    return tmp;
 }
 
 Iterator Iterator::operator--()
 {
     if (!elm)
         return *this;
-    elm = elm->next;
-    /*À décommenter si on ne veut pas du tout afficher les éléments marqués. On sautera alors les éléments marqués.
+    elm = elm->previous;
+    /*Éventuellement si on ne veut pas du tout afficher les éléments marqués. On sautera alors les éléments marqués.
       Ceci a été commenté pour pouvoir prendre en charge l'affichage des éléments marqués avec une tête de mort.
     if (elm)
     {
         if (elm->marked == true)
         {
-            if (elm->next)
+            if (elm->previous)
             {
                 while (elm->marked == true and elm)
                 {
@@ -250,31 +239,9 @@ Iterator Iterator::operator--()
 
 Iterator Iterator::operator--(int)
 {
-    if (!elm)
-        return *this;
-    elm = elm->next;
-    /*À décommenter si on ne veut pas du tout afficher les éléments marqués. On sautera alors les éléments marqués.
-      Ceci a été commenté pour pouvoir prendre en charge l'affichage des éléments marqués avec une tête de mort.
-    if (elm)
-    {
-        if (elm->marked == true)
-        {
-            if (elm->next)
-            {
-                while (elm->marked == true and elm)
-                {
-                    elm = elm->previous;
-                }
-            }
-            else
-            {
-                elm = elm->previous;
-            }
-        }
-    }
-    */
-    cur.elm = elm;
-    return cur;
+    auto tmp = *this;
+    operator--();
+    return tmp;
 }
 
 int Iterator::get()
@@ -294,4 +261,3 @@ int Iterator::get()
     return -1;
 }
 
-Iterator::Iterator() : elm(nullptr) { ; }
